@@ -1,0 +1,136 @@
+package com.modiejun.cloudfiles.FileUpload;
+
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
+
+@Service
+public class FileStorageService implements StorageService{
+
+    private final Path rootLocation;
+
+    public FileStorageService(StorageProperties properties) {
+        this.rootLocation= Paths.get(properties.getLocation());
+    }
+
+    @Override
+    public void init() {
+        try {
+            Files.createDirectory(rootLocation);
+        } catch (IOException e) {
+            throw new StorageException("Could not init Storage",e);
+        }
+    }
+
+    @Override
+    public void store(String directory, MultipartFile file) {
+        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+
+        try {
+            if (file.isEmpty()) {
+                throw  new StorageException("Failed to store empty File : " +filename);
+            }
+            if (filename.contains("..")) {
+                throw new StorageException("Cannot store file with two .. : "+filename);
+            }
+
+            try (InputStream inputStream = file.getInputStream()) {
+                Files.copy(inputStream, Paths.get(directory).resolve(filename),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (IOException e) {
+            throw new StorageException("Failed to store file: "+filename,e);
+        }
+    }
+
+    @Override
+    public Stream<Path> loadAllFilesInDirectory(String directory) {
+        try {
+            return Files.walk(Paths.get(directory),1)
+                    .filter(path -> (!path.toString().equals(directory)&&path.toString().contains(".")))
+                    .map(this.rootLocation::relativize);
+        } catch (IOException e) {
+            throw new StorageException("Failed to read stored files",e);
+        }
+    }
+
+    @Override
+    public Stream<Path> loadAllSubdirectories(String directory) {
+        try{
+            return Files.walk(Paths.get(directory),1)
+                    .filter(path -> {
+                        return path.toString().equals("") && !path.toString().equals(directory) && !path.toString().contains(".");
+                    }).map(this.rootLocation::relativize);
+        } catch (IOException e) {
+            throw new StorageException("Failed to read subdirectory Files",e);
+        }
+    }
+
+    @Override
+    public Path load(String filename) {
+        return rootLocation.resolve(filename);
+    }
+
+    @Override
+    public Resource loadAsResource(String filename) {
+        try {
+            Path file = load(filename);
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists()|| resource.isReadable()){
+                return resource;
+            }else {
+                throw new StorageFileNotFoundException("File could not be read"+filename);
+            }
+        } catch (MalformedURLException e) {
+            throw new StorageFileNotFoundException("Could not read file " + filename);
+        }
+    }
+
+    @Override
+    public void deleteAll() {
+        FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    }
+
+    @Override
+    public void delete(String filename) {
+//    TODO delete the folder if empty ?
+        try {
+            FileSystemUtils.deleteRecursively(Paths.get(filename));
+        } catch (IOException e) {
+            throw new StorageFileNotFoundException("Cold not find the file to delete");
+        }
+
+    }
+
+    @Override
+    public void createNewDirectory(String directoryName) {
+        try {
+            Path directoryLocation= Paths.get(directoryName);
+            Files.createDirectory(directoryLocation);
+        } catch (IOException e) {
+            throw new StorageException("Could not create new directory");
+        }
+    }
+
+    @Override
+    public String getParentFolderLink(String directoryName) {
+        if (directoryName.contains(File.separator)){
+            //has a parent directory
+            return directoryName.substring(0,directoryName.lastIndexOf(File.separator));
+        }
+        return null;
+    }
+}
