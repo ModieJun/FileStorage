@@ -1,10 +1,10 @@
 package com.modiejun.cloudfiles.FileUpload;
 
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;;
 
-@Configuration("storage")
+@ConfigurationProperties("storage")
 public class StorageProperties {
-    private String location = "upliad-dir";
+    private String location = "upload-dir";
 
     public String getLocation() {
         return  location;

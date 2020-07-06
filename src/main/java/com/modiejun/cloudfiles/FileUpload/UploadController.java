@@ -48,8 +48,12 @@ public class UploadController {
         model.addAttribute("folders",storageService.loadAllSubdirectories(directory)
                 .map(path ->
                         //creates Folder objects for response
-                        new Folder(path.getFileName().toString(), MvcUriComponentsBuilder.fromMethodName(UploadController.class,
-                                "moveIntoDirectory",path.getFileName().toString(),httpSession,redirectAttributes).build().toUriString())
+                        new Folder(path.getFileName().toString(),
+                                MvcUriComponentsBuilder.fromMethodName(UploadController.class,
+                                        "moveIntoDirectory",path.getFileName().toString(),httpSession,redirectAttributes).build().toUriString(),
+                                MvcUriComponentsBuilder.fromMethodName(UploadController.class,
+                                        "deleteFolder",path.getFileName().toString()).build().toUriString()
+                                )
                 ).collect(Collectors.toList()));
 
         //Add Files into model
@@ -61,12 +65,12 @@ public class UploadController {
                         //File name
                         ,e.getFileName().toString(),
                         // Delete Link
-                        MvcUriComponentsBuilder.fromMethodName(UploadController.class,"deleteFile",
-                                e.getFileName().toString()).build().toUriString()
+                        MvcUriComponentsBuilder.fromMethodName(UploadController.class,
+                                "deleteFile", e.getFileName().toString()).build().toUriString()
                 )).collect(Collectors.toList())
         );
 
-        return "uploadForm";
+        return "index";
     }
 
     /*
@@ -84,9 +88,15 @@ public class UploadController {
      *  Link to delete the file, used to create the link for the linkage for deletion
      */
     @GetMapping("/delete/{filename:.+}")
-    @ResponseBody
-    public void deleteFile(@PathVariable String filename) {
+    public String deleteFile(@PathVariable String filename) {
         storageService.delete(filename);
+        return "redirect:/";
+    }
+
+    @GetMapping("/deletefolder/{foldername:.+}")
+    public String deleteFolder(@PathVariable String foldername){
+        storageService.deleteDirectory(foldername);
+        return "redirect:/";
     }
 
     /*

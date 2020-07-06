@@ -6,15 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sun.management.FileSystem;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
 @Service
@@ -29,7 +27,9 @@ public class FileStorageService implements StorageService{
     @Override
     public void init() {
         try {
-            Files.createDirectory(rootLocation);
+            if (!Files.exists(rootLocation))
+                Files.createDirectory(rootLocation);
+
         } catch (IOException e) {
             throw new StorageException("Could not init Storage",e);
         }
@@ -69,10 +69,14 @@ public class FileStorageService implements StorageService{
 
     @Override
     public Stream<Path> loadAllSubdirectories(String directory) {
-        try{
+        try {
             return Files.walk(Paths.get(directory),1)
                     .filter(path -> {
-                        return path.toString().equals("") && !path.toString().equals(directory) && !path.toString().contains(".");
+                        System.out.println(path);
+                        if (!path.toString().equals("") && !path.toString().equals(directory) && !path.toString().contains(".")){
+                            return true;
+                        }
+                        return false;
                     }).map(this.rootLocation::relativize);
         } catch (IOException e) {
             throw new StorageException("Failed to read subdirectory Files",e);
@@ -108,11 +112,24 @@ public class FileStorageService implements StorageService{
     public void delete(String filename) {
 //    TODO delete the folder if empty ?
         try {
-            FileSystemUtils.deleteRecursively(Paths.get(filename));
+//            System.out.println("Delete filename: " + filename);
+            System.out.println("Delete Filename: " + load(filename).toString());
+            if (Files.deleteIfExists(this.load(filename)))
+                System.out.println("Deleted");
         } catch (IOException e) {
             throw new StorageFileNotFoundException("Cold not find the file to delete");
         }
+    }
 
+    @Override
+    public void deleteDirectory(String directoryName) {
+        try {
+            System.out.println("Delete Directory Name : " + directoryName);
+            if(Files.deleteIfExists(this.load(directoryName)))
+                System.out.println("Deleted Folder: " + directoryName);
+        } catch (IOException e) {
+            throw new StorageFileNotFoundException("Folder not Found");
+        }
     }
 
     @Override

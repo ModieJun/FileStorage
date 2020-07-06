@@ -20,6 +20,7 @@ public class CloudfilesApplication {
     CommandLineRunner init(StorageService storageService) {
         return(
                 args -> {
+                    storageService.deleteAll();
                     storageService.init();
                 });
     }

@@ -26,6 +26,8 @@ public interface StorageService {
 
     void createNewDirectory(String directoryName);
 
+    void deleteDirectory(String directoryName);
+
     String getParentFolderLink(String directory);
 
 }
