@@ -9,26 +9,7 @@
 
 </div>
 
-<div class="container">
-    <div class="container" th:if="${message}">
-        <h5 th:text="${message}" class="info-text"></h5>
-    </div>
-</div>
-
-<div class="container">
-    <div class="container " >
-        <h5 class="header ">Add Folder</h5>
-        <form class="" action="/newDirectory" method="post">
-            <label for="folderName">Folder Name</label>
-            <div class="row">
-                <input class="col l6" type="text" id="folderName" name="folderName" required minlength="1"
-                       maxlength="15">
-                <input type="submit" class="btn green lighten-1 col l2 offset-l3" value="Create">
-            </div>
-        </form>
-    </div>
-
-
+<div class="container row">
     <!--File upload modal-->
     <div id="fileModal" class="modal">
         <div class="modal-content container ">
@@ -40,13 +21,41 @@
             </form>
         </div>
     </div>
+    <!--    Add Folder modal-->
+    <div class="modal " id="folderModal">
+        <div class="modal-content container">
+            <h5 class="header ">Add Folder</h5>
+            <form class="" action="/newDirectory" method="post">
+                <label for="folderName">Folder Name</label>
+                <div class="row">
+                    <input class="col l6" type="text" id="folderName" name="folderName" required minlength="1"
+                           maxlength="15">
+                    <input type="submit" class="btn green lighten-1 col l2 offset-l3" value="Create">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--    Actions tab-->
+    <div id="actions-tab " class="col l12 " style="padding: 20px;">
+        <div class="row">
+            <a href="#folderModal" class="col l2 btn white grey-text waves-effect waves-light modal-trigger"><i
+                    class="material-icons left ">library_add</i>Add Folder</a>
+
+            <a class="col l2 offset-l1 wave-effect waves-light btn  modal-trigger" href="#fileModal"><i
+                    class="material-icons left ">add</i>Add File</a>
+        </div>
+    </div>
+
+    <!--    Messages/Alerts -->
+    <div  th:if="${message}">
+        <p th:text="${message}" class="green-text"></p>
+    </div>
 
     <!--Files-->
-    <div class="row container " th:if=" ${parentFolder} or ${files} or ${folders} ">
+    <div class="row " th:if=" ${parentFolder} or ${files} or ${folders} ">
         <div class="row ">
             <h5 class="header col l6">Directory File & Folders: </h5>
-            <a class=" col l3 offset-l3 wave-effect waves-light btn  modal-trigger" href="#fileModal"><i
-                    class="material-icons left ">add_circle</i>Add File</a>
         </div>
 
         <table class="col s12 m12 ">
@@ -72,7 +81,8 @@
                 <td><i class="material-icons">folder</i></td>
                 <td><a th:href="${folder.getPath()}" th:text="'.'+${folder.getFolderName()}"></a></td>
                 <td></td>
-                <td><a th:href="${folder.getFolderDelete()}"><i class="material-icons red-text darken-2">delete</i></a></td>
+                <td><a th:href="${folder.getFolderDelete()}"><i class="material-icons red-text darken-2">delete</i></a>
+                </td>
             </tr>
 
             <!--Files in Folder-->
@@ -86,17 +96,6 @@
             </tbody>
 
         </table>
-        <!--                <div class="col s12 m4 " th:each="file :${files}">-->
-        <!--                    <div  class="card white ">-->
-        <!--                        <div class="card-content black-text center-text">-->
-        <!--                            <h6 th:text="${file.fileName}"></h6>-->
-        <!--                        </div>-->
-        <!--                        <div class="card-action ">-->
-        <!--                            <a th:href="${file.filelink}" class=" btn green">Download</a>-->
-        <!--                            <a th:href="${file.fileDeleteLink}" class="btn red">Delete</a>-->
-        <!--                        </div>-->
-        <!--                    </div>-->
-        <!--                </div>-->
     </div>
 
 </div>
@@ -106,10 +105,15 @@
 <div th:insert="Components::materializejs"></div>
 
 <script>
+    //File Modal
     document.addEventListener('DOMContentLoaded', function () {
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems);
     })
+    // //    Folder modal
+    //     document.addEventListener('DOMContentLoaded',function () {
+    //         var element=document
+    //     })
 </script>
 
 </body>

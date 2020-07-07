@@ -52,7 +52,7 @@ public class UploadController {
                                 MvcUriComponentsBuilder.fromMethodName(UploadController.class,
                                         "moveIntoDirectory",path.getFileName().toString(),httpSession,redirectAttributes).build().toUriString(),
                                 MvcUriComponentsBuilder.fromMethodName(UploadController.class,
-                                        "deleteFolder",path.getFileName().toString()).build().toUriString()
+                                        "deleteFolder",path.getFileName().toString(),redirectAttributes).build().toUriString()
                                 )
                 ).collect(Collectors.toList()));
 
@@ -66,7 +66,7 @@ public class UploadController {
                         ,e.getFileName().toString(),
                         // Delete Link
                         MvcUriComponentsBuilder.fromMethodName(UploadController.class,
-                                "deleteFile", e.getFileName().toString()).build().toUriString()
+                                "deleteFile", e.getFileName().toString(),redirectAttributes).build().toUriString()
                 )).collect(Collectors.toList())
         );
 
@@ -88,14 +88,16 @@ public class UploadController {
      *  Link to delete the file, used to create the link for the linkage for deletion
      */
     @GetMapping("/delete/{filename:.+}")
-    public String deleteFile(@PathVariable String filename) {
+    public String deleteFile(@PathVariable String filename,RedirectAttributes redirectAttributes) {
         storageService.delete(filename);
+        redirectAttributes.addFlashAttribute("message","Successfully deleted : " + filename);
         return "redirect:/";
     }
 
     @GetMapping("/deletefolder/{foldername:.+}")
-    public String deleteFolder(@PathVariable String foldername){
+    public String deleteFolder(@PathVariable String foldername,RedirectAttributes redirectAttributes){
         storageService.deleteDirectory(foldername);
+        redirectAttributes.addFlashAttribute("message","Successfully deleted folder : "+ foldername);
         return "redirect:/";
     }
 
