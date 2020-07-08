@@ -102,17 +102,21 @@ public class UploadController {
     }
 
     /*
-        Post mapping for uploading the file
+        Post Mapping for Multi File Upload
      */
-    @PostMapping("/")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   HttpSession httpSession,
-                                   RedirectAttributes redirectAttributes) {
-        String directory = httpSession.getAttribute("currentFolderPath").toString();
-        storageService.store(directory,file);
-        redirectAttributes.addFlashAttribute("message",
-                "You have Successfully Uploaded" + file.getOriginalFilename() + "!");
-        return "redirect:/" ; // redirect back to the home page
+    @PostMapping("/fileUpload")
+    public String handleMultiFileUpload(@RequestParam("files") MultipartFile[] files, HttpSession session, RedirectAttributes redirectAttributes) {
+        //get directory for saving file
+        String currentDirectory = session.getAttribute("currentFolderPath").toString();
+
+        //Call the storage service to save files
+        System.out.println(files.length);
+        storageService.store(currentDirectory,files);
+
+        //send to storage service for saving
+        redirectAttributes.addFlashAttribute("message","File(s) Uploaded and saved!");
+
+        return "redirect:/";
     }
 
 

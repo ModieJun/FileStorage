@@ -12,6 +12,8 @@ public interface StorageService {
 
     void store(String directory, MultipartFile file);
 
+    void store(String directory, MultipartFile[] files);
+
     Stream<Path> loadAllFilesInDirectory(String directory);
 
     Stream<Path> loadAllSubdirectories(String directory);
