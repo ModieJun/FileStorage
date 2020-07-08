@@ -16,8 +16,8 @@
             <h4>File Selector</h4>
             <form class=" row" action="/" method="post" enctype="multipart/form-data">
                 <span>Select File</span>
-                <input required type="file" name="file"/>
-                <input type="submit" class="btn green" value="Upload"/>
+                <input autofocus required type="file" name="file"/>
+                <input type="submit" class="btn green" value="Upload" />
             </form>
         </div>
     </div>
@@ -28,7 +28,7 @@
             <form class="" action="/newDirectory" method="post">
                 <label for="folderName">Folder Name</label>
                 <div class="row">
-                    <input class="col l6" type="text" id="folderName" name="folderName" required minlength="1"
+                    <input autofocus class="col l6" type="text" id="folderName" name="folderName" required minlength="1"
                            maxlength="15">
                     <input type="submit" class="btn green lighten-1 col l2 offset-l3" value="Create">
                 </div>
@@ -37,7 +37,7 @@
     </div>
 
     <!--    Actions tab-->
-    <div id="actions-tab " class="col l12 " style="padding: 20px;">
+    <div id="actions-tab " class="col l12 " style="padding-top: 20px;">
         <div class="row">
             <a href="#folderModal" class="col l2 btn white grey-text waves-effect waves-light modal-trigger"><i
                     class="material-icons left ">library_add</i>Add Folder</a>
