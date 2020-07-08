@@ -28,7 +28,7 @@ public class UploadController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/")
+    @RequestMapping("/")
     public String home(Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 
         String directory = "upload-dir";
@@ -164,9 +164,9 @@ public class UploadController {
         return "redirect:/";
     }
 
-
+//    Exception Handler when throwable found
     @ExceptionHandler(StorageFileNotFoundException.class)
-    public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
+    public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc ) {
         return ResponseEntity.notFound().build();
     }
 

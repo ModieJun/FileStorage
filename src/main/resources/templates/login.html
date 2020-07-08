@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:include="components:: baseheader">
+    <title id="pagetitle">Login</title>
+</head>
+<body>
+<div th:insert="Components :: header">
+
+</div>
+
+<div class="container row ">
+    <form class=" col l4  offset-l4 form-signin container z-depth-2" method="post" th:action="@{/login}" style="margin-top: 50px; padding-top: 40px;padding-bottom: 50px;" >
+        <div class="center" style="margin-bottom: 50px;">
+            <h4 class="">Please sign in</h4>
+        </div>
+        <p>
+            <label for="username" class="sr-only">Username</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Username" required=""
+                   autofocus="">
+        </p>
+        <p>
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Password"
+                   required="">
+        </p>
+
+        <p>
+            <label for="remember-me">
+                <input type="checkbox" id="remember-me" name="remember-me" class="">
+                <span>Remember-me</span>
+            </label>
+        </p>
+        <!--        <input name="_csrf" type="hidden" value="e8e3783c-b316-45b2-8ad6-ef534a40e877">-->
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+</div>
+
+
+<div th:include="Components::materializejs">
+
+</div>
+</body>
+</html>

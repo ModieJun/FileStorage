@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="baseheader">
     <title th:include="::#pagetitle">Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
@@ -10,7 +10,10 @@
     <nav class="navbar-fixed blue lighten-1">
         <div class="nav-wrapper">
             <a class="brand-logo center header"><strong>My File Storage</strong></a>
-<!--            <a href="/logout" class="btn red">LOGOUT</a>-->
+            <ul id="nav-mobile" class="right hide-on-medium-and-down">
+<!--                TODO is authenticated button for login or logout-->
+                <li><a href="/logout" class="btn red">LOGOUT</a></li>
+            </ul>
         </div>
     </nav>
 </div>
