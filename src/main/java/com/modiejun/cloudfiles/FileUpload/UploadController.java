@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.stream.Collectors;
@@ -76,6 +78,7 @@ public class UploadController {
     /*
         Download the files as a resource, passed in through response body
      */
+    @PreAuthorize("hasAuthority('file:download')")
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
@@ -87,6 +90,7 @@ public class UploadController {
     /**
      *  Link to delete the file, used to create the link for the linkage for deletion
      */
+    @PreAuthorize("hasAuthority('file:delete')")
     @GetMapping("/delete/{filename:.+}")
     public String deleteFile(@PathVariable String filename,RedirectAttributes redirectAttributes) {
         storageService.delete(filename);
@@ -94,6 +98,7 @@ public class UploadController {
         return "redirect:/";
     }
 
+    @PreAuthorize("hasAuthority('file:delete')")
     @GetMapping("/deletefolder/{foldername:.+}")
     public String deleteFolder(@PathVariable String foldername,RedirectAttributes redirectAttributes){
         storageService.deleteDirectory(foldername);
@@ -104,6 +109,7 @@ public class UploadController {
     /*
         Post Mapping for Multi File Upload
      */
+    @PreAuthorize("hasAuthority('file:write')")
     @PostMapping("/fileUpload")
     public String handleMultiFileUpload(@RequestParam("files") MultipartFile[] files, HttpSession session, RedirectAttributes redirectAttributes) {
         //get directory for saving file
@@ -149,6 +155,7 @@ public class UploadController {
     /*
     Create a new directory in the current folder
      */
+    @PreAuthorize("hasAuthority('file:write')")
     @PostMapping("/newDirectory")
     public String createNewDirectory(@RequestParam("folderName") String folderName,
                                      HttpSession httpSession,

@@ -13,9 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static com.modiejun.cloudfiles.Security.ApplicationUserRoles.*;
+
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PasswordEncoder encoder;
@@ -32,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/index","/js/**","/css**","/templates").permitAll()
-                .antMatchers("/").hasRole("ADMIN")
+                .antMatchers("/").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .formLogin().loginPage("/login").permitAll()
@@ -50,10 +52,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     @Bean
     protected UserDetailsService userDetailsService() {
-        UserDetails userDetails= User.builder().username("admin").password(encoder.encode("admin"))
-                .authorities("ROLE_ADMIN").build();
+        UserDetails admin= User.builder().username("admin").password(encoder.encode("admin"))
+                .roles(ADMIN.name())
+                .authorities(ADMIN.getGrantedAuthoritySet()).build();
 
-        return new InMemoryUserDetailsManager(userDetails);
+        UserDetails normal_user= User.builder().username("normal").password(encoder.encode("normal"))
+                .roles(NORMAL_USER.name())
+                .authorities(NORMAL_USER.getGrantedAuthoritySet()).build();
+
+        UserDetails visitor= User.builder().username("visitor").password(encoder.encode("visitor"))
+                .roles(VISITOR.name())
+                .authorities(VISITOR.getGrantedAuthoritySet()).build();
+
+
+        return new InMemoryUserDetailsManager(admin,normal_user,visitor);
     }
 
 
