@@ -45,7 +45,7 @@
 
     <!--    Messages/Alerts -->
     <div th:if="${message}">
-    <!--     Used for toast -->
+        <!--     Used for toast -->
         <p id="message" th:text="${message}" class="green-text" hidden></p>
     </div>
 
@@ -112,7 +112,7 @@
     const message = document.getElementById("message");
     //toast
     if (message != null) {
-        M.toast({html: message.textContent,length:3000,classes:'white blue-text'});
+        M.toast({html: message.textContent, length: 3000, classes: 'white blue-text'});
     }
 </script>
 

@@ -1,12 +1,13 @@
 package com.modiejun.cloudfiles.FileUpload;
 
 import com.modiejun.cloudfiles.FileUpload.POJO.FileResponse;
-import com.modiejun.cloudfiles.FileUpload.POJO.Folder;
+import com.modiejun.cloudfiles.FileUpload.POJO.FolderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpSession;
+import javax.smartcardio.ATR;
 import java.io.File;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -50,7 +52,7 @@ public class UploadController {
         model.addAttribute("folders",storageService.loadAllSubdirectories(directory)
                 .map(path ->
                         //creates Folder objects for response
-                        new Folder(path.getFileName().toString(),
+                        new FolderResponse(path.getFileName().toString(),
                                 MvcUriComponentsBuilder.fromMethodName(UploadController.class,
                                         "moveIntoDirectory",path.getFileName().toString(),httpSession,redirectAttributes).build().toUriString(),
                                 MvcUriComponentsBuilder.fromMethodName(UploadController.class,
@@ -175,6 +177,11 @@ public class UploadController {
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc ) {
         return ResponseEntity.notFound().build();
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public String handleAccessDeniedException(AccessDeniedException exception,RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message","You do not have permission to perform this Request");
+        return "redirect:/";
     }
 
 }

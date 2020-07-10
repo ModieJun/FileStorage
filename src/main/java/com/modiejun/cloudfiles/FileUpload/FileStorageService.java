@@ -12,8 +12,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+/*
+    TODO : save file into the DB from the service (Need to create the obj   )
+ */
 
 @Service
 public class FileStorageService implements StorageService {
@@ -86,10 +92,7 @@ public class FileStorageService implements StorageService {
                 return Files.walk(Paths.get(directory), 1)
                         .filter(path -> {
 //                            System.out.println(path);
-                            if (!path.toString().equals("") && !path.toString().equals(directory) && !path.toString().contains(".")) {
-                                return true;
-                            }
-                            return false;
+                            return !path.toString().equals("") && !path.toString().equals(directory) && !path.toString().contains(".");
                         }).map(this.rootLocation::relativize);
             } catch (IOException e) {
                 throw new StorageException("Failed to read subdirectory Files", e);
@@ -163,4 +166,4 @@ public class FileStorageService implements StorageService {
             }
             return null;
         }
-    }
+}
