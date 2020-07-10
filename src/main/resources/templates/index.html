@@ -43,11 +43,6 @@
 
     </div>
 
-    <!--    Messages/Alerts -->
-    <div th:if="${message}">
-        <!--     Used for toast -->
-        <p id="message" th:text="${message}" class="green-text" hidden></p>
-    </div>
 
     <!--Files-->
     <div class="row " th:if=" ${parentFolder} or ${files} or ${folders} ">
@@ -86,7 +81,7 @@
             <tr th:each="file:${files}">
                 <td><i class="material-icons">insert_drive_file</i></td>
                 <td><p th:text="${file.getFileName()}"></p></td>
-                <td><a th:href="${file.getFilelink()}"><i class="material-icons blue-text">file_download</i></a></td>
+                <td><a th:href="${file.getFileLink()}"><i class="material-icons blue-text">file_download</i></a></td>
                 <td><a th:href="${file.getFileDeleteLink()}"><i class="material-icons red-text darken-2">delete</i></a>
                 </td>
             </tr>
@@ -107,13 +102,6 @@
         var elems = document.querySelectorAll('.modal');
         var instances = M.Modal.init(elems);
     })
-
-    // Toast
-    const message = document.getElementById("message");
-    //toast
-    if (message != null) {
-        M.toast({html: message.textContent, length: 3000, classes: 'white blue-text'});
-    }
 </script>
 
 </body>

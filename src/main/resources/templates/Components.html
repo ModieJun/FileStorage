@@ -11,28 +11,44 @@
         <div class="nav-wrapper">
             <a class="brand-logo center header"><strong>My File Storage</strong></a>
             <ul id="nav-mobile" class="right hide-on-medium-and-down">
-                <div  sec:authorize="authenticated">
+                <div sec:authorize="authenticated">
                     <li>Username： <span style="font-weight: bolder" sec:authentication="name"></span></li>
                     <li><a href="/logout" class="btn red">LOGOUT</a></li>
                 </div>
             </ul>
         </div>
     </nav>
+
+
+    <!--    Messages/Alerts -->
+    <div th:if="${message}">
+        <!--     Used for toast -->
+        <p id="message" th:text="${message}" class="green-text" hidden></p>
+    </div>
 </div>
 
 <div th:fragment="content" class="container">
 
 </div>
 
-<div th:fragment="actions-tab" sec:authorize="hasAuthority('file:write')">
+<div th:fragment="actions-tab" >
     <div id="actions-tab " class="col l12 " style="padding-top: 30px;">
         <div class="row">
-            <a class="col l2 btn white blue-text waves-effect waves-light modal-trigger" href="#folderModal"><i
-                    class="material-icons left ">create_new_folder</i>Create Folder</a>
+            <div sec:authorize="hasAuthority('file:write')">
+                <a class="col l2 btn white blue-text waves-effect waves-light modal-trigger" href="#folderModal"><i
+                        class="material-icons left ">create_new_folder</i>Create Folder</a>
 
-            <a class="col l2 offset-l1 blue lighten-1 wave-effect waves-light btn  modal-trigger"
-               href="#multiFileModal"><i
-                    class="material-icons left ">library_add</i>Upload File(s)</a>
+                <a class="col l2 offset-l1 blue lighten-1 wave-effect waves-light btn  modal-trigger"
+                   href="#multiFileModal"><i
+                        class="material-icons left ">library_add</i>Upload File(s)</a>
+            </div>
+
+            <!--            Search -->
+            <form th:action="@{/searchFile}" class="col l3 offset-l1 row" method="get">
+                <input placeholder="search file" id="search_file" type="text" name="fileNameSearch" class="col l8">
+                <button type="submit" class="btn white col l4"><i class="material-icons grey-text darken-3">search</i>
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -45,6 +61,14 @@
 
 <div th:fragment="materializejs">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Toast
+        const message = document.getElementById("message");
+        //toast
+        if (message != null) {
+            M.toast({html: message.textContent, length: 3000, classes: 'white blue-text'});
+        }
+    </script>
 </div>
 </body>
 </html>

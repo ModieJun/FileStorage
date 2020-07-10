@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head th:include="components:: baseheader">
+    <title id="pagetitle">Search</title>
+</head>
+<body>
+<div th:insert="Components :: header">
+
+</div>
+
+<div class="container">
+    <h2>Results</h2>
+    <p th:if="not ${files}" class="red-text">0 Results</p>
+    <div class="row" th:if="${files}">
+        <div th:each="file : ${files}"  class="col l4  m-6 z-depth-2" style="margin: 5px;padding: 20px 0;">
+                <div class="container">
+                    <p th:text="${file.getFileName()}" style="word-wrap: break-word"></p>
+                    <a th:href="${file.getFileLink()}">Download</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:include="Components::materializejs">
+
+</div>
+</body>
+</html>

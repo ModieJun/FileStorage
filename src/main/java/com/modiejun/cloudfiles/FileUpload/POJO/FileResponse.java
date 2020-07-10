@@ -1,18 +1,18 @@
 package com.modiejun.cloudfiles.FileUpload.POJO;
 
 public class FileResponse {
-    public final String filelink;
+    public final String fileLink;
     public final String fileName;
     public final String fileDeleteLink;
 
     public FileResponse(String filelink, String fileName, String fileDeleteLink) {
-        this.filelink = filelink;
+        this.fileLink = filelink;
         this.fileName = fileName;
         this.fileDeleteLink = fileDeleteLink;
     }
 
-    public String getFilelink() {
-        return filelink;
+    public String getFileLink() {
+        return fileLink;
     }
 
     public String getFileName() {

@@ -2,6 +2,7 @@ package com.modiejun.cloudfiles.FileUpload;
 
 import com.modiejun.cloudfiles.FileUpload.POJO.SavedFile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FileObjService {
@@ -11,5 +12,7 @@ public interface FileObjService {
 
     boolean updateFile(SavedFile file);
 
-    Optional<SavedFile> search(String owner, String fileName);
+    Optional<SavedFile> findFirstByFileName(String fileName);
+
+    Optional<List<SavedFile>> searchByFileName(String fileName);
 }

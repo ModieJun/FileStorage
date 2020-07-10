@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -46,7 +47,15 @@ public class FileObjServiceImplementation implements FileObjService {
     }
 
     @Override
-    public Optional<SavedFile> search(String owner, String fileName) {
-        return fileRepository.findAllByOwnerAndFileNameContains(owner,fileName);
+    public Optional<SavedFile> findFirstByFileName(String fileName) {
+        return fileRepository.findFirstByFileName(fileName);
+    }
+
+    /*
+        Searches the file by file name that contains the wildcard
+     */
+    @Override
+    public Optional<List<SavedFile>> searchByFileName(String fileName) {
+        return fileRepository.findAllByFileNameLike(fileName);
     }
 }

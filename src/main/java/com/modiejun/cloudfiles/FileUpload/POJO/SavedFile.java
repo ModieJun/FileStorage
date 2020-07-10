@@ -1,10 +1,7 @@
 package com.modiejun.cloudfiles.FileUpload.POJO;
 
 import javax.annotation.Nonnull;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity(name = "files")
 @Table
@@ -12,6 +9,7 @@ public class SavedFile  {
 
     @Id
     @Column
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -49,10 +47,12 @@ public class SavedFile  {
         this.filePath = filePath;
     }
 
+    @Nonnull
     public String getOwner() {
         return owner;
     }
 
+    @Nonnull
     public String getFilePath() {
         return filePath;
     }
@@ -60,6 +60,10 @@ public class SavedFile  {
     public SavedFile setId(Long id) {
         this.id = id;
         return this;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public SavedFile setOwner(@Nonnull String owner) {

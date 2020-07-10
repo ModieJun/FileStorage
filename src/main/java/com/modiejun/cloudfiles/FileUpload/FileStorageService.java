@@ -1,5 +1,7 @@
 package com.modiejun.cloudfiles.FileUpload;
 
+import com.modiejun.cloudfiles.FileUpload.POJO.SavedFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -11,9 +13,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -25,9 +28,12 @@ import java.util.stream.Stream;
 public class FileStorageService implements StorageService {
 
     private final Path rootLocation;
+    private final FileObjService fileObjService;
 
-    public FileStorageService(StorageProperties properties) {
+    @Autowired
+    public FileStorageService(StorageProperties properties, FileObjService fileObjService) {
         this.rootLocation = Paths.get(properties.getLocation());
+        this.fileObjService = fileObjService;
     }
 
     @Override
@@ -56,6 +62,8 @@ public class FileStorageService implements StorageService {
                 Files.copy(inputStream, Paths.get(directory).resolve(filename),
                         StandardCopyOption.REPLACE_EXISTING);
             }
+            //Save to DB
+            fileObjService.saveFile(new SavedFile(filename,"JJ",Paths.get(directory).resolve(filename).toString()));
         } catch (IOException e) {
             throw new StorageException("Failed to store file: " + filename, e);
         }
@@ -130,8 +138,10 @@ public class FileStorageService implements StorageService {
             try {
 //            System.out.println("Delete filename: " + filename);
                 System.out.println("Delete Filename: " + load(filename).toString());
-                if (Files.deleteIfExists(this.load(filename)))
+                if (Files.deleteIfExists(this.load(filename))) {
                     System.out.println("Deleted");
+                    fileObjService.deleteFile(fileObjService.findFirstByFileName(filename).get().getId());
+                }
             } catch (IOException e) {
                 throw new StorageFileNotFoundException("Cold not find the file to delete");
             }
