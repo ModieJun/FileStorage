@@ -9,10 +9,11 @@
 <div th:fragment="header">
     <nav class="navbar-fixed blue lighten-1">
         <div class="nav-wrapper">
-            <a class="brand-logo center header"><strong>My File Storage</strong></a>
+            <a class="brand-logo center header" th:href="@{/}"><strong>My File Storage</strong></a>
             <ul id="nav-mobile" class="right hide-on-medium-and-down">
                 <div sec:authorize="authenticated">
                     <li>Username： <span style="font-weight: bolder" sec:authentication="name"></span></li>
+<!--                    <li>Role: <span sec:authentication="principal.authorities"></span></li>-->
                     <li><a href="/logout" class="btn red">LOGOUT</a></li>
                 </div>
             </ul>
@@ -45,12 +46,43 @@
 
             <!--            Search -->
             <form th:action="@{/searchFile}" class="col l3 offset-l1 row" method="get">
-                <input placeholder="search file" id="search_file" type="text" name="fileNameSearch" class="col l8">
+                <input placeholder="search file" id="search_file" type="text" name="fileNameSearch" class="col l8 ">
                 <button type="submit" class="btn white col l4"><i class="material-icons grey-text darken-3">search</i>
                 </button>
             </form>
         </div>
     </div>
+
+<!--    Modals -->
+    <!--  Add Multiple files  -->
+    <div id="multiFileModal" class="modal">
+        <div class="modal-content container ">
+            <h4>File Selector</h4>
+            <form class=" row" th:action="@{/fileUpload}" method="post" enctype="multipart/form-data">
+                <span>Select File(s)</span>
+                <input autofocus required type="file" name="files" multiple/>
+                <input type="submit" class="btn white green-text lighten-1" value="Upload"/>
+            </form>
+        </div>
+    </div>
+
+    <!--    Add Folder modal : NB-- Need to include MaterialJS fragment-->
+    <div class="modal " id="folderModal">
+        <div class="modal-content container">
+            <h5 class="header ">Add Folder</h5>
+            <form class="" action="/newDirectory" method="post">
+                <label for="folderName">Folder Name</label>
+                <div class="row">
+                    <input autofocus class="col l6" type="text" id="folderName" name="folderName" required minlength="1"
+                           maxlength="15">
+                    <input type="submit" class="btn white green-text lighten-1 col l2 offset-l3" value="Create">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="contact-me">
 </div>
 
 <footer th:fragment="footer" class="page-footer white black-text ">
@@ -68,6 +100,12 @@
         if (message != null) {
             M.toast({html: message.textContent, length: 3000, classes: 'white blue-text'});
         }
+
+        // ModalS
+        document.addEventListener('DOMContentLoaded', function () {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems);
+        })
     </script>
 </div>
 </body>

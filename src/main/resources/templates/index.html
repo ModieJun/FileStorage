@@ -11,32 +11,6 @@
 
 <div class="container row">
 
-    <!--  Add Multiple files  -->
-    <div id="multiFileModal" class="modal">
-        <div class="modal-content container ">
-            <h4>File Selector</h4>
-            <form class=" row" th:action="@{/fileUpload}" method="post" enctype="multipart/form-data">
-                <span>Select File(s)</span>
-                <input autofocus required type="file" name="files" multiple/>
-                <input type="submit" class="btn white green-text lighten-1" value="Upload"/>
-            </form>
-        </div>
-    </div>
-
-    <!--    Add Folder modal-->
-    <div class="modal " id="folderModal">
-        <div class="modal-content container">
-            <h5 class="header ">Add Folder</h5>
-            <form class="" action="/newDirectory" method="post">
-                <label for="folderName">Folder Name</label>
-                <div class="row">
-                    <input autofocus class="col l6" type="text" id="folderName" name="folderName" required minlength="1"
-                           maxlength="15">
-                    <input type="submit" class="btn white green-text lighten-1 col l2 offset-l3" value="Create">
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!--    Actions tab-->
     <div th:insert="Components::actions-tab">
@@ -97,11 +71,6 @@
 <div th:insert="Components::materializejs"></div>
 
 <script>
-    // ModalS
-    document.addEventListener('DOMContentLoaded', function () {
-        var elems = document.querySelectorAll('.modal');
-        var instances = M.Modal.init(elems);
-    })
 </script>
 
 </body>
