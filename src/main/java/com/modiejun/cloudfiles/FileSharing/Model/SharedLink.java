@@ -1,7 +1,7 @@
 package com.modiejun.cloudfiles.FileSharing.Model;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity(name = "sharedLink")
 @Table
@@ -20,8 +20,9 @@ public class SharedLink {
     @Column(nullable = false)
     private Date created= new Date(System.currentTimeMillis());
 
+    // In Seconds
     @Column(nullable = false)
-    private Integer validDuration= 10;
+    private Integer validDuration= 30;
 
     @Column(nullable = false)
     private String fileToBeAccessed;
@@ -30,7 +31,7 @@ public class SharedLink {
     private String downloadLink;
 
     @Column(nullable = false)
-    private boolean isCurrentlyValid=true;
+    private boolean currentlyValid =true;
 
     public SharedLink() {
     }
@@ -106,11 +107,11 @@ public class SharedLink {
     }
 
     public boolean isCurrentlyValid() {
-        return isCurrentlyValid;
+        return currentlyValid;
     }
 
     public SharedLink setCurrentlyValid(boolean currentlyValid) {
-        isCurrentlyValid = currentlyValid;
+        this.currentlyValid = currentlyValid;
         return this;
     }
 }

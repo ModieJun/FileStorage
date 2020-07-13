@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 
 @Service("sharingService")
 public class SharingServiceImplementation  implements SharingService{
@@ -33,6 +34,16 @@ public class SharingServiceImplementation  implements SharingService{
         }else{
             throw new SharedLinkInvalidException("SharedLink has been invalidated");
         }
+    }
+
+    @Override
+    public Iterable<SharedLink> fetchAllLinks() {
+        return  linkRepository.findAll();
+    }
+
+    @Override
+    public Optional<List<SharedLink>> fetchAllValidLinks() {
+        return linkRepository.findAllByCurrentlyValid(true);
     }
 
     @Override
