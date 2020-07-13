@@ -26,6 +26,10 @@
         <!--     Used for toast -->
         <p id="message" th:text="${message}" class="green-text" hidden></p>
     </div>
+    <div th:if="${shareCode}" class="container" style="margin-top: 50px;">
+        <p>Your Share-Link has been generated: <span th:text="${shareCode}"></span></p>
+    </div>
+
 </div>
 
 <div th:fragment="content" class="container">

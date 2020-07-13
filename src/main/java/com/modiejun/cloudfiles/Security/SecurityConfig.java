@@ -37,11 +37,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/console/**","/h2-console/**").permitAll()// allow h2-database
                 .antMatchers("/index","/js/**","/css**","/templates").permitAll()
+                .antMatchers("/sharing/**").permitAll() // permit the sharing link
                 .antMatchers("/").authenticated()
                 .anyRequest().permitAll()
             .and()
                 .formLogin().loginPage("/login").permitAll()
-                .defaultSuccessUrl("/")
             .and()
                 .logout().logoutUrl("/logout")
                 .clearAuthentication(true)

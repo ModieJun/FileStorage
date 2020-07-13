@@ -29,6 +29,7 @@
             <tr>
                 <th></th>
                 <th>Name</th>
+                <th>Share</th>
                 <th>Download</th>
                 <th>Delete</th>
             </tr>
@@ -40,12 +41,14 @@
                 <td><a th:href="${parentFolder}">..</a></td>
                 <td></td>
                 <td></td>
+                <td></td>
             </tr>
 
             <!--Folder Links for Directory -->
             <tr th:each="folder :${folders}">
                 <td><i class="material-icons">folder</i></td>
                 <td><a th:href="${folder.getPath()}" th:text="${folder.getFolderName()}"></a></td>
+                <td></td>
                 <td></td>
                 <td><a th:href="${folder.getFolderDelete()}"><i class="material-icons red-text darken-2">delete</i></a>
                 </td>
@@ -55,6 +58,13 @@
             <tr th:each="file:${files}">
                 <td><i class="material-icons">insert_drive_file</i></td>
                 <td><p th:text="${file.getFileName()}"></p></td>
+                <td>
+                    <form th:action="@{/share/generateLink}" method="POST">
+                        <input type="text" hidden name="filePath" th:value="${file.getFileLink()}">
+                        <input type="text" hidden name="fileName" th:value="${file.getFileName()}">
+                        <button class="white btn z-depth-0 black-text" type="submit" ><i class="material-icons">share</i></button>
+                    </form>
+                </td>
                 <td><a th:href="${file.getFileLink()}"><i class="material-icons blue-text">file_download</i></a></td>
                 <td><a th:href="${file.getFileDeleteLink()}"><i class="material-icons red-text darken-2">delete</i></a>
                 </td>

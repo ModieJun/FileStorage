@@ -1,5 +1,6 @@
 package com.modiejun.cloudfiles.FileUpload;
 
+import com.modiejun.cloudfiles.FileSharing.SharingService;
 import com.modiejun.cloudfiles.FileUpload.POJO.FileResponse;
 import com.modiejun.cloudfiles.FileUpload.POJO.FolderResponse;
 import com.modiejun.cloudfiles.FileUpload.POJO.SavedFile;
@@ -30,10 +31,13 @@ public class UploadController {
 
     private final FileObjService fileObjService;
 
+    private final SharingService sharingService;
+
     @Autowired
-    public UploadController(StorageService storageService, FileObjService fileObjService) {
+    public UploadController(StorageService storageService, FileObjService fileObjService, SharingService sharingService) {
         this.storageService = storageService;
         this.fileObjService = fileObjService;
+        this.sharingService = sharingService;
     }
 
     @RequestMapping("/")
@@ -99,7 +103,8 @@ public class UploadController {
     @PreAuthorize("hasAuthority('file:delete')")
     @GetMapping("/delete/{filename:.+}")
     public String deleteFile(@PathVariable String filename, RedirectAttributes redirectAttributes) {
-        storageService.delete(filename);
+        sharingService.inValidateLink(filename); //invalidate the link if shared
+        storageService.delete(filename); //delete the file from storage
         redirectAttributes.addFlashAttribute("message", "Successfully deleted : " + filename);
         return "redirect:/";
     }
@@ -202,7 +207,7 @@ public class UploadController {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public String handleAccessDeniedException(AccessDeniedException exception, RedirectAttributes redirectAttributes) {
+    public String handleAccessDeniedException(AccessDeniedException exception ,RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("message", "You do not have permission to perform this Request");
         return "redirect:/";
     }
