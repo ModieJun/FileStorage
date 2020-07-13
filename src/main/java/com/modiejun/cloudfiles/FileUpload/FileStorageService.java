@@ -20,9 +20,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-/*
-    TODO : save file into the DB from the service (Need to create the obj   )
- */
 
 @Service
 public class FileStorageService implements StorageService {

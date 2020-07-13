@@ -1,8 +1,7 @@
 package com.modiejun.cloudfiles.FileSharing;
 
 
-import com.modiejun.cloudfiles.FileSharing.Model.SharedLink;
-import com.modiejun.cloudfiles.FileSharing.Model.SharedLinkExistException;
+import com.modiejun.cloudfiles.FileSharing.Model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +34,6 @@ public class SharingController {
         model.addAttribute("fileName",sharedLink.getFileToBeAccessed());
         model.addAttribute("downloadLink",sharedLink.getDownloadLink());
         return "viewShared";
-
     }
 
     @PostMapping("/generateLink")
@@ -52,18 +50,25 @@ public class SharingController {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    @ResponseBody
-    public String invalidShareCode(MissingServletRequestParameterException exception,RedirectAttributes redirectAttributes){
-        return exception.getMessage();
+    public String invalidShareCode(MissingServletRequestParameterException exception, Model model) {
+        model.addAttribute("message",exception.getMessage());
+        return "viewShared";
     }
 
     private void validateCodeExist(String code) throws MissingServletRequestParameterException {
         if (code.isEmpty()) throw new MissingServletRequestParameterException("shareCode","String type");
     }
 
-    @ExceptionHandler(SharedLinkExistException.class)
-    public String sharedLinkExistsHandler(SharedLinkExistException exception,RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("message","Redirect Link already created Before: "+exception.getMessage());
-        return "redirect:/";
+    @ExceptionHandler({SharedLinkExistException.class, SharedLinkNotFoundException.class})
+    public String sharedLinkExistsHandler(SharedLinkException exception, Model model) {
+        model.addAttribute("message",exception.getMessage());
+        return "viewShared";
+    }
+
+
+    @ExceptionHandler(SharedLinkInvalidException.class)
+    public String sharedLinkIsInvalidHandler(SharedLinkInvalidException exception, Model model) {
+        model.addAttribute("message","Shared link you have entered has been Invalidated");
+        return "viewShared";
     }
 }
