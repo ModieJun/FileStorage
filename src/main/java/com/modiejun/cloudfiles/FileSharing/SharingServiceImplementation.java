@@ -68,7 +68,7 @@ public class SharingServiceImplementation  implements SharingService{
 
     @Override
     public List<SharedLink> getListOfSharedLinks(String username) {
-        return null;
+        return linkRepository.findAllBySharedBy(username).orElseThrow(null);
     }
 
     @Override

@@ -9,6 +9,7 @@
 </div>
 
 <div class="container  ">
+<!--    View  Shared Resource-->
     <div class="  card " th:if="${fileName} and ${downloadLink}">
         <div class="card-content">
             <h5 th:text="${fileName}"></h5>
@@ -17,7 +18,27 @@
             <a th:href="${downloadLink}" class="btn white blue-text">Download</a>
         </div>
     </div>
+
+<!--    View my Shared Resources-->
+    <div th:if="${myShared}">
+        <h5>My Shared Links</h5>
+        <table class="col l12" style="margin-top: 30px;">
+            <thead>
+            <tr>
+                <th>FileName</th>
+                <th>Share Link</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="sharedLink :${myShared}">
+                    <td th:text="${sharedLink.getFileName()}"></td>
+                    <td th:text="${sharedLink.getShareUri()}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 
 <div th:insert="Components::materializejs">
 </div>

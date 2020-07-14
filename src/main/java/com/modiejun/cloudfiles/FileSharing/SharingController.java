@@ -13,6 +13,8 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller(value = "sharingController")
 @RequestMapping("/share")
@@ -49,10 +51,25 @@ public class SharingController {
         return "redirect:/";
     }
 
+    @GetMapping("/myShareLinks")
+    @PreAuthorize("hasAuthority('file:read')")
+    public String myLinks(Principal principal,Model model) {
+        String username = principal.getName();
+        List<SharedLink> links = sharingService.getListOfSharedLinks(username);
+
+        model.addAttribute("myShared", links.stream().map(sharedLink -> {
+            return new SharelinkResponse(sharedLink.getFileToBeAccessed()
+                    ,MvcUriComponentsBuilder.fromMethodName(SharingController.class,
+                    "displaySharedResource",sharedLink.getShareCode(),model).build().toUriString());
+        }).collect(Collectors.toList()));
+
+        return "viewShared";
+    }
+
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public String invalidShareCode(MissingServletRequestParameterException exception, Model model) {
         model.addAttribute("message",exception.getMessage());
-        return "viewShared";
+        return "redirect:/";
     }
 
     private void validateCodeExist(String code) throws MissingServletRequestParameterException {
@@ -60,9 +77,9 @@ public class SharingController {
     }
 
     @ExceptionHandler({SharedLinkExistException.class, SharedLinkNotFoundException.class})
-    public String sharedLinkExistsHandler(SharedLinkException exception, Model model) {
-        model.addAttribute("message",exception.getMessage());
-        return "viewShared";
+    public String sharedLinkExistsHandler(SharedLinkException exception, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message",exception.getMessage());
+        return "redirect:/";
     }
 
 
